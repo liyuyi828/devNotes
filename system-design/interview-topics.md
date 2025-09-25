@@ -11,11 +11,86 @@
 - **Fault tolerance**: System's ability to continue operating despite component failures
 - Achieved through redundancy, replication, and failover mechanisms
 
+#### Hardware Failures
+**Examples**: Server crashes, disk failures, network card failures, power outages
+**Solutions**:
+- Redundant hardware (RAID for disks, multiple power supplies)
+- Load balancers with health checks
+- Auto-failover to backup servers
+- Geographic distribution across data centers
+
+#### Software Failures
+**Examples**: Application bugs, memory leaks, deadlocks, OS crashes
+**Solutions**:
+- Circuit breaker pattern to isolate failing services
+- Graceful degradation (reduce functionality instead of complete failure)
+- Restart policies and health checks
+- Blue-green deployments for safer releases
+
+#### Network Failures
+**Examples**: Network partitions, DNS failures, packet loss, high latency
+**Solutions**:
+- Multiple network paths and providers
+- Retry mechanisms with exponential backoff
+- Timeout configurations
+- Service mesh for network reliability
+
+#### Human Errors
+**Examples**: Misconfigurations, accidental deletions, deployment mistakes
+**Solutions**:
+- Infrastructure as code (version controlled configs)
+- Automated testing and CI/CD pipelines
+- Rollback capabilities
+- Least privilege access controls
+
+#### Dependency Failures
+**Examples**: Third-party API downtime, database unavailability, external service failures
+**Solutions**:
+- Bulkhead pattern (isolate dependencies)
+- Fallback mechanisms and cached responses
+- Multiple vendor strategies
+- Service level agreements (SLAs) with dependencies
+
+#### Scale-Related Failures
+**Examples**: Traffic spikes, resource exhaustion, cascading failures
+**Solutions**:
+- Auto-scaling policies
+- Rate limiting and throttling
+- Queue systems to handle bursts
+- Performance testing and capacity planning
+
 ### CAP Theorem
 - **Consistency**: All nodes see the same data simultaneously
 - **Availability**: System remains operational 100% of the time
 - **Partition tolerance**: System continues despite network failures
 - You can only guarantee 2 out of 3 properties
+
+#### Consistency + Availability (CA) - No Partition Tolerance
+**Strategy**: Traditional RDBMS in single data center
+- **Examples**: PostgreSQL, MySQL (single master)
+- **Trade-off**: System fails during network partitions
+- **Use case**: When network reliability is guaranteed (single data center)
+
+#### Consistency + Partition Tolerance (CP) - Sacrifice Availability
+**Strategy**: Strong consistency, may become unavailable during partitions
+- **Examples**: MongoDB, HBase, Redis Cluster
+- **Techniques**:
+  - Master-slave with synchronous replication
+  - Consensus algorithms (Raft, Paxos)
+  - Quorum reads/writes (majority must respond)
+- **Trade-off**: System may be unavailable but data is always consistent
+- **Use case**: Financial systems, banking where data accuracy is critical
+
+#### Availability + Partition Tolerance (AP) - Sacrifice Consistency
+**Strategy**: Always available, eventual consistency
+- **Examples**: Cassandra, DynamoDB, CouchDB
+- **Techniques**:
+  - Asynchronous replication
+  - Vector clocks for conflict resolution
+  - Last-write-wins or application-level conflict resolution
+  - Gossip protocols for state synchronization
+- **Trade-off**: Temporary inconsistency but system stays available
+- **Use case**: Social media, content delivery, shopping carts where availability matters more
 
 ### Latency vs Throughput
 - **Latency**: Time to process a single request (response time)
@@ -161,6 +236,17 @@
 - Components communicate through events
 - Promotes loose coupling and scalability
 - Event sourcing: Store events, not current state
+
+## Common System Designs
+- Chat system (WhatsApp, Slack)
+- Social media feed (Twitter, Instagram)
+- Video streaming (YouTube, Netflix)
+- URL shortener (bit.ly, TinyURL)
+- Search engine (Google)
+- Ride-sharing system (Uber, Lyft)
+- E-commerce platform (Amazon)
+- Payment system
+- Notification system
 
 ## Performance & Monitoring
 
