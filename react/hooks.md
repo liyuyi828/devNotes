@@ -41,20 +41,90 @@ function UserProfile({ userId }) {
 **When to use:** Consuming context values without nested components.
 
 ```jsx
-import { useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-const ThemeContext = React.createContext();
+// 1. Create the context with default value
+const ThemeContext = createContext({
+  theme: 'light',
+  toggleTheme: () => {}
+});
 
-function Button() {
-  const theme = useContext(ThemeContext);
+// 2. Create a provider component
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  };
+
+  const value = {
+    theme,
+    toggleTheme
+  };
 
   return (
-    <button style={{ backgroundColor: theme.bg }}>
-      Click me
+    <ThemeContext.Provider value={value}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+// 3. Custom hook to use the context
+function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+}
+
+// 4. Components that consume the context
+function Button() {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <button
+      style={{
+        backgroundColor: theme === 'light' ? '#fff' : '#333',
+        color: theme === 'light' ? '#333' : '#fff'
+      }}
+      onClick={toggleTheme}
+    >
+      Toggle Theme ({theme})
     </button>
   );
 }
+
+function Header() {
+  const { theme } = useTheme();
+
+  return (
+    <header style={{
+      backgroundColor: theme === 'light' ? '#f0f0f0' : '#222'
+    }}>
+      <h1>My App</h1>
+    </header>
+  );
+}
+
+// 5. App component wrapped with provider
+function App() {
+  return (
+    <ThemeProvider>
+      <div>
+        <Header />
+        <Button />
+      </div>
+    </ThemeProvider>
+  );
+}
 ```
+
+**Key Points:**
+- **Context Creation**: Use `createContext()` with optional default value
+- **Provider Required**: Yes, you need `Context.Provider` to set values
+- **Provider Placement**: Wrap components that need access to the context
+- **Error Handling**: Check if context exists when consumed outside provider
 
 ## Additional Hooks
 
