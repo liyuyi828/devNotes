@@ -97,6 +97,21 @@
 - **Throughput**: Number of requests processed per unit time
 - Often inversely related - optimizing one may hurt the other
 
+#### Strategies to Improve Latency
+- **CDN and edge caching**: Serve content from geographically closer locations
+- **Database optimization**: Proper indexing, query optimization, connection pooling
+- **Asynchronous processing**: Handle non-critical operations in background
+- **Reduce payload size**: Data compression, minimize response data
+- **In-memory caching**: Redis, Memcached for frequently accessed data
+
+#### Strategies to Improve Throughput
+- **Horizontal scaling**: Add more servers to handle parallel requests
+- **Load balancing**: Distribute requests across multiple servers
+- **Database read replicas**: Scale read operations across multiple databases
+- **Message queues**: Batch processing for high-volume operations
+- **Connection multiplexing**: Reuse connections to reduce overhead
+- **Compression**: Reduce data transfer time and bandwidth usage
+
 ### Load Balancing Strategies
 - **Round Robin**: Requests distributed sequentially
 - **Least Connections**: Route to server with fewest active connections
